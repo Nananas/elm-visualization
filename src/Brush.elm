@@ -6,6 +6,7 @@ module Brush exposing
     , setSelection1d, setSelection2d, clearSelection, TransitionOption, instantly
     , view, Attribute, selectedArea, handleSize
     , bottomHandle, leftHandle, rightHandle, topHandle, topLeftHandle, topRightHandle, bottomLeftHandle, bottomRightHandle
+    , dragging
     )
 
 {-| Brushing is the interactive specification of a one- or two-dimensional selected region using a pointing gesture, such as by clicking and dragging the mouse. Brushing is often used to select discrete elements, such as dots in a scatterplot or files on a desktop. It can also be used to zoom-in to a region of interest, or to select continuous regions for cross-filtering data.
@@ -264,6 +265,18 @@ init x y extent =
 keyboardModifiersEnabled : Bool -> Brush dimension -> Brush dimension
 keyboardModifiersEnabled enabled (Brush model) =
     Brush { model | keysEnabled = enabled }
+
+
+{-| Exposes the drag state of the Brush
+-}
+dragging : Brush dimension -> Bool
+dragging (Brush { drag }) =
+    case drag of
+        Nothing ->
+            False
+
+        Just _ ->
+            True
 
 
 {-| Exposes the selection for a single dimensional brush, where the first number should always be less than the second.
