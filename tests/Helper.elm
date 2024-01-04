@@ -1,10 +1,9 @@
-module Helper exposing (atLeastFloat, atMostFloat, expectAll, expectAny, expectMember, isAbout, isBetween, pathEqual, precision)
+module Helper exposing (assert, atLeastFloat, atMostFloat, expectAll, expectAny, expectMember, isBetween, pathEqual)
 
 import Expect exposing (Expectation, FloatingPointTolerance(..))
 import Path exposing (Path)
 import Regex
-import Test.Runner exposing (getFailureReason)
-import Test.Runner.Failure
+import Test.Runner
 
 
 numRegex : Regex.Regex
@@ -50,15 +49,6 @@ pathEqual str path =
 precision : number
 precision =
     100000
-
-
-isAbout : Float -> Float -> Expectation
-isAbout a b =
-    if truncate ((a - b) * precision) == 0 then
-        Expect.pass
-
-    else
-        Expect.within (Absolute 0.00001) a b
 
 
 isBetween : ( Float, Float ) -> Float -> Expectation
@@ -123,11 +113,11 @@ expectAll expectations =
 expectAny : List Expectation -> Expectation
 expectAny expectations =
     let
-        failuires =
+        failures =
             List.filterMap Test.Runner.getFailureReason expectations
     in
-    if List.length failuires == List.length expectations then
-        Expect.fail <| (++) "Expected at least one of the following to pass:\n" <| String.join "\n" <| List.map (.reason >> Test.Runner.Failure.format "") failuires
+    if List.length failures == List.length expectations then
+        Expect.fail <| "Expected at least one of the following to pass:\n" ++ (String.join "\n" <| List.map (.reason >> Debug.toString) failures)
 
     else
         Expect.pass
@@ -135,4 +125,17 @@ expectAny expectations =
 
 expectMember : List a -> a -> Expectation
 expectMember list item =
-    Expect.true "expectMember" <| List.member item list
+    if List.member item list then
+        Expect.pass
+
+    else
+        Expect.fail ("Expected " ++ Debug.toString item ++ " to be a member of " ++ Debug.toString list)
+
+
+assert : String -> Bool -> Expectation
+assert str bool =
+    if bool then
+        Expect.pass
+
+    else
+        Expect.fail str

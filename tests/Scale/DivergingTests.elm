@@ -1,7 +1,7 @@
 module Scale.DivergingTests exposing (diverging, divergingLog)
 
 import Expect exposing (FloatingPointTolerance(..))
-import Fuzz exposing (float)
+import Fuzz
 import Scale
 import Test exposing (Test, describe, fuzz, test)
 
@@ -13,7 +13,7 @@ convert val scale =
 diverging : Test
 diverging =
     describe "Scale.diverging"
-        [ fuzz float "default-ish values work like identity" <|
+        [ fuzz Fuzz.niceFloat "default-ish values work like identity" <|
             \s ->
                 Scale.convert (Scale.diverging identity ( 0, 0.5, 1 )) s
                     |> Expect.within (Absolute 0.00001) s

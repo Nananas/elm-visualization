@@ -16,6 +16,8 @@ module Curves exposing (main)
 @screenshot monotoneinx
 @screenshot step
 @screenshot natural
+@screenshot bumpx
+@screenshot bumpy
 
 @category Reference
 
@@ -23,7 +25,6 @@ module Curves exposing (main)
 
 import Color exposing (Color)
 import Example
-import Html exposing (a, div, p)
 import Path exposing (Path)
 import Scale exposing (ContinuousScale)
 import Scale.Color
@@ -112,7 +113,7 @@ type alias Curve =
 
 
 drawCurve : ( String, Path, Color ) -> Svg msg
-drawCurve ( name, path, color ) =
+drawCurve ( _, path, color ) =
     Path.element path [ stroke (Paint color), fill PaintNone, strokeWidth 2 ]
 
 
@@ -181,6 +182,8 @@ main =
     , ( "MonotoneInX", basic "monotoneInXCurve" Shape.monotoneInXCurve )
     , ( "Step", parametrized "stepCurve" Shape.stepCurve )
     , ( "Natural", basic "naturalCurve" Shape.naturalCurve )
+    , ( "BumpX", basic "bumpXCurve" Shape.bumpXCurve )
+    , ( "BumpY", basic "bumpYCurve" Shape.bumpYCurve )
     ]
         |> Example.tabbed "Curve type:"
         |> Example.application view
